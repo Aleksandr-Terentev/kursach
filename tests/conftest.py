@@ -43,10 +43,34 @@ def get_requests_aapl():
 
 
 @pytest.fixture
-def test_test():
-    return []
+def spending_result_fix():
+    return {'Yes': [50, 21], 'No': [131, 2]}
 
+
+@pytest.fixture
+def result_spending_by_category():
+    return {
+        'MCC': {},
+        'Бонусы (включая кэшбэк)': {},
+        'Валюта операции': {},
+        'Валюта платежа': {},
+        'Дата операции': {},
+        'Дата платежа': {},
+        'Категория': {},
+        'Кэшбэк': {},
+        'Номер карты': {},
+        'Округление на инвесткопилку': {},
+        'Описание': {},
+        'Статус': {},
+        'Сумма операции': {},
+        'Сумма операции с округлением': {},
+        'Сумма платежа': {}
+    }
 
 @pytest.fixture
 def result_spending_by_weekday():
     return {}
+
+@pytest.fixture
+def test_test():
+    return []

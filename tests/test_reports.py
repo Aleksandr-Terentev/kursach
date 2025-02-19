@@ -14,4 +14,3 @@ def test_decorator(spending_result_fix):
 def test_spending_by_weekday(result_spending_by_weekday):
     assert result_spending_by_weekday == {}
 
-
