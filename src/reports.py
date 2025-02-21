@@ -9,7 +9,9 @@ def decorator(path_file: str = "../data/test.csv"):
             result.to_csv(path_file)
 
             return result
+
         return wrapper
+
     return writing_to_file
 
 
@@ -28,11 +30,12 @@ def spending_by_weekday(transactions: pd.DataFrame,
     today_3_months_ago = date_obj.replace(month=month).strftime("%d-%m-%Y")
     date_str = date_obj.strftime("%d-%m-%Y")
 
-    filtred_trans = (
-        transactions.loc)[(transactions["Дата платежа"] >= today_3_months_ago) | (transactions["Дата платежа"] <=
-                                                                                  date_str)]
+    filtred_trans = (transactions.loc)[
+        (transactions["Дата платежа"] >= today_3_months_ago) |
+        (transactions["Дата платежа"] <= date_str)
+    ]
 
-    result = (filtred_trans.groupby("Дата платежа")
-              .agg({"Сумма операции": ["mean"]}))
+    result = (filtred_trans.groupby("Дата платежа").agg
+              ({"Сумма операции": ["mean"]}))
 
     return result

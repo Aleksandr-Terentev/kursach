@@ -23,8 +23,7 @@ def greeting():
 
 def transactions(operations: pd.DataFrame) -> list[dict]:
     result = operations.groupby("Номер карты", as_index=False)
-    total_sum_cashback = (
-                          result.sum().loc)[:, ["Номер карты",
+    total_sum_cashback = (result.sum().loc)[:, ["Номер карты",
                                                 "Сумма платежа",
                                                 "Кэшбэк"]]
 
@@ -41,6 +40,7 @@ def five_transactions(operations: pd.DataFrame) -> list[dict]:
 
     return result_top_five.to_dict(orient="records")
 
+
 with open("user_settings.json", encoding="utf-8") as f:
     # открывает пользовательские настройки по акциям и валютам
     load_json_info = json.load(f)
@@ -54,13 +54,13 @@ def main(data):
     slice_time_last = date_obj.strftime("%d.%m.%Y")
     slice_time_first = new_date_obj.strftime("%d.%m.%Y")
 
-    slice_file_to_data = file[
-        (file["Дата платежа"] >= slice_time_first) & (file["Дата платежа"] <= slice_time_last)
-        ]
+    slice_file_to_data = file[(file["Дата платежа"] >= slice_time_first) &
+                              (file["Дата платежа"] <= slice_time_last)]
     main_dict = dict()
-    main_dict['greeting'] = greeting()
-    main_dict['cards'] = transactions(slice_file_to_data)
-    main_dict['top_transactions'] = five_transactions(slice_file_to_data)
-    main_dict['currency_rates'] = get_currency_rates(load_json_info['user_currencies'])
-    main_dict['stock_prices'] = get_stock_prices(load_json_info['user_stocks'])
+    main_dict["greeting"] = greeting()
+    main_dict["cards"] = transactions(slice_file_to_data)
+    main_dict["top_transactions"] = five_transactions(slice_file_to_data)
+    main_dict["currency_rates"] = get_currency_rates(
+        load_json_info["user_currencies"])
+    main_dict["stock_prices"] = get_stock_prices(load_json_info["user_stocks"])
     return main_dict
