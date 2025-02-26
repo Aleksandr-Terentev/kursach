@@ -5,7 +5,7 @@ from external_api import get_currency_rates, get_stock_prices
 
 
 def open_csv():
-    file_scv = pd.read_csv("Data/operations.csv")
+    file_scv = pd.read_csv("../Data/operations.csv")
     return file_scv
 
 

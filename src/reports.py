@@ -2,7 +2,7 @@ import pandas as pd
 import datetime
 
 
-def decorator(path_file: str = "../data/test.csv"):
+def decorator(path_file: str = "../Data/test.csv"):
     def writing_to_file(func):
         def wrapper(*args, **kwargs):
             result = func(*args, **kwargs)
@@ -15,7 +15,7 @@ def decorator(path_file: str = "../data/test.csv"):
     return writing_to_file
 
 
-trans = pd.read_excel("../data/operations.xlsx")
+trans = pd.read_excel("../Data/operations.xlsx")
 
 
 @decorator()

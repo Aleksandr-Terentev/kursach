@@ -39,18 +39,21 @@ def get_currency_rates(currencies: list) -> list[dict]:
     rates = []
     try:
         for currency in currencies:
-            response = requests.get(f"https://v6.exchangerate-api.com/v6/"
-                                    f"{API_KEY_CURRENCY}/latest/{currency}")
+            response = (requests.get
+                        (f"https://v6.exchangerate-api.com/v6/"
+                         f"{API_KEY_CURRENCY}/latest/{currency}"))
 
             status_code = response.status_code
             get_currency_logger.info(f"Статус код запроса {status_code}")
 
             try:
                 data = response.json()
-                (rates.append({"currency": currency,
-                               "rate": data["conversion_rates"]["RUB"]}))
+                (rates.append
+                 ({"currency": currency,
+                   "rate": data["conversion_rates"]["RUB"]}))
             except KeyError:
-                (get_currency_logger.error("не найден ключ. keyerror"))
+                (get_currency_logger.error
+                 ("не найден ключ. keyerror"))
 
         get_currency_logger.info("Сделали запрос, "
                                  "получили стоимость валют из польз. настроек")
@@ -85,14 +88,13 @@ def get_stock_prices(stocks: list) -> list[dict]:
             get_stock_logger.info("запрос статус = 200, отработал")
 
             data = response.json()
-            prices.append({"stock": stock,
-                           "price": data["values"][0]["close"]})
+            prices.append({"stock": stock, "price": data["values"][0]["close"]})
 
         return prices
     except ExceptionGroup:
         get_stock_logger.warning("ошибка в запросе")
 
 
-print(get_currency_rates(load_json_info["user_currencies"]))
-# print(get_stock_prices(load_json_info['user_stocks']))
-# print(load_json_info)
+print(get_currency_rates(load_json_info['user_currencies']))
+#print(get_stock_prices(load_json_info['user_stocks']))
+#print(load_json_info)
