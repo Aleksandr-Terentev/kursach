@@ -29,15 +29,16 @@ def get_requests_aapl():
             'type': 'Common Stock'
         },
         'values':
-            [
-                {'datetime': '2024-07-19',
-                 'open': '224.85201',
-                 'high': '226.80000',
-                 'low': '223.27499',
-                 'close': '224.58350',
-                 'volume': '34289484'
-                 }
-            ],
+        [
+            {
+                'datetime': '2024-07-19',
+                'open': '224.85201',
+                'high': '226.80000',
+                'low': '223.27499',
+                'close': '224.58350',
+                'volume': '34289484'
+            }
+        ],
         'status': 'ok'
     }
 
