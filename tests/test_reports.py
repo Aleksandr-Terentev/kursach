@@ -1,15 +1,20 @@
-from src.reports import decorator
-import pandas as pd
 import pytest
 
+from src.reports import spending_result
+import pandas as pd
 
-def test_decorator(spending_result_fix):
-    @decorator()
+
+def test_spending_result(spending_result_fix):
+    @spending_result()
     def test_dataframe():
         df = pd.DataFrame({'Yes': [50, 21], 'No': [131, 2]})
         return df
 
     assert type(test_dataframe().to_dict()) == type(spending_result_fix)
+
+
+def test_spending_by_category(result_spending_by_category_):
+    assert result_spending_by_category_ == {}
 
 
 @pytest.mark.parametrize("param, expected", [("test", "test_fixture_value")])

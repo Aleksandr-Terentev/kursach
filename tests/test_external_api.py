@@ -1,6 +1,5 @@
-from unittest.mock import patch
-
 from src.external_api import get_currency_rates, get_stock_prices
+from unittest.mock import patch
 
 
 @patch('requests.get')

@@ -70,15 +70,10 @@ def result_spending_by_category():
 
 
 @pytest.fixture
-def result_spending_by_weekday():
-    return {}
-
-
-@pytest.fixture
-def test_test():
-    return []
-
-
-@pytest.fixture
 def some_fixture():
     return "fixture_value"
+
+
+@pytest.fixture
+def result_spending_by_category_():
+    return {}

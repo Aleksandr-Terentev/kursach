@@ -1,66 +1,79 @@
 import datetime
-import pandas as pd
 import json
+import logging
+
+import pandas as pd
+
 from external_api import get_currency_rates, get_stock_prices
+from utils import get_info_cards, greeting, top_transactions
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s = - %(name)s - %(levelname)s - %(message)s",
+    filename="../log/views.txt",
+    filemode="w",
+)
+
+opening_logger = logging.getLogger("opening_file")
+views_logger = logging.getLogger("views")
 
 
-def open_csv():
-    file_scv = pd.read_csv("../Data/operations.csv")
-    return file_scv
+def opening_file(path_file: str) -> pd.DataFrame:
+    """Функция читает файл формата xlsx и возвращает DataFrame"""
+    operations_xlsx = pd.read_excel(path_file)
+
+    opening_logger.info("Функция отработала")
+
+    return operations_xlsx
 
 
-def greeting():
-    current_date_time = datetime.datetime.now()
-    if 0 <= current_date_time.hour <= 8:
-        return "Доброй ночи!"
-    elif 9 <= current_date_time.hour <= 12:
-        return "Доброе утро!"
-    elif 13 <= current_date_time.hour <= 17:
-        return "Добрый день!"
-    else:
-        return "Добрый вечер!"
+def views(data: str) -> str:
+    """
+    принимает строку с датой, возвращает инфо по операциям с начала месяца по текущую дату
+    """
+    info_file = opening_file("../data/operations.xlsx")  # Открываем файл с операциями
+    sort_file = info_file.sort_values(by="Дата платежа", ascending=True)
 
+    views_logger.info("открытие файла успешно, opening_file отработал")
 
-def transactions(operations: pd.DataFrame) -> list[dict]:
-    result = operations.groupby("Номер карты", as_index=False)
-    total_sum_cashback = (result.sum().loc)[:, ["Номер карты",
-                                                "Сумма платежа",
-                                                "Кэшбэк"]]
-
-    return total_sum_cashback.to_dict(orient="records")
-
-
-def five_transactions(operations: pd.DataFrame) -> list[dict]:
-    top_five = operations.sort_values(by="Сумма платежа",
-                                      ascending=False).head()
-    result_top_five = top_five.loc[:, ["Дата платежа",
-                                       "Сумма платежа",
-                                       "Категория",
-                                       "Описание"]]
-
-    return result_top_five.to_dict(orient="records")
-
-
-with open("user_settings.json", encoding="utf-8") as f:
-    # открывает пользовательские настройки по акциям и валютам
-    load_json_info = json.load(f)
-
-
-def main(data):
-    file = open_csv()
     date_obj = datetime.datetime.strptime(data, "%d.%m.%Y")
     new_date_obj = date_obj.replace(day=1)
 
     slice_time_last = date_obj.strftime("%d.%m.%Y")
     slice_time_first = new_date_obj.strftime("%d.%m.%Y")
 
-    slice_file_to_data = file[(file["Дата платежа"] >= slice_time_first) &
-                              (file["Дата платежа"] <= slice_time_last)]
-    main_dict = dict()
-    main_dict["greeting"] = greeting()
-    main_dict["cards"] = transactions(slice_file_to_data)
-    main_dict["top_transactions"] = five_transactions(slice_file_to_data)
-    main_dict["currency_rates"] = get_currency_rates(
-        load_json_info["user_currencies"])
-    main_dict["stock_prices"] = get_stock_prices(load_json_info["user_stocks"])
-    return main_dict
+    slice_file_to_data = sort_file[
+        (sort_file["Дата платежа"] >= slice_time_first) & (sort_file["Дата платежа"] <= slice_time_last)
+    ]
+
+    views_logger.info("сортировка файла по графе дата платежа")
+
+    with open("../user_settings.json", encoding="utf-8") as f:  # открываем польз. настройки по акциям и валютам
+        load_json_info = json.load(f)
+
+    views_logger.info("открытие файла польз. настроек Успешно")
+
+    informations_user = dict()
+
+    informations_user["greeting"] = greeting()  # функция приветствия
+    views_logger.info("greeting отработал")
+
+    informations_user["cards"] = get_info_cards(slice_file_to_data)  # функция получения инфо по параметрам из файла
+    views_logger.info("get_info_cards отработал")
+
+    informations_user["top_transactions"] = top_transactions(slice_file_to_data)  # вывод топ транзакций по сумме
+    views_logger.info("top_transactions отработал")
+
+    informations_user["currency_rates"] = get_currency_rates(load_json_info["user_currencies"])  # функция
+    # получения текущего курса валют(валюты из польз. настроек)
+    views_logger.info("get_currency_rates отработал")
+
+    informations_user["stock_prices"] = get_stock_prices(load_json_info["user_stocks"])  # функция получения текущего
+    # курса стоимости акций (акции из польз. настроек)
+    views_logger.info("get_stock_prices отработал")
+
+    return json.dumps(informations_user, ensure_ascii=False, indent=4)
+
+
+if __name__ == 'main':
+    print(views('01.01.2021'))
